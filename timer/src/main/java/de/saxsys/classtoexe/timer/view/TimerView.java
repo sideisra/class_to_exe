@@ -3,19 +3,71 @@ package de.saxsys.classtoexe.timer.view;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.util.StringConverter;
+import javafx.util.converter.IntegerStringConverter;
 import de.saxsys.classtoexe.timer.viewmodel.TimerViewModel;
 import de.saxsys.jfx.mvvm.base.view.View;
 
 public class TimerView extends View<TimerViewModel> {
 
 	@FXML
-	private Label helloLabel;
+	private TextField minutesInput;
+
+	@FXML
+	private TextField secondsInput;
+
+	@FXML
+	private Button startStop;
+
+	private final StringConverter<? extends Number> converter = new IntegerStringConverter();
 
 	@Override
 	public void initialize(URL url, ResourceBundle resBundle) {
-		helloLabel.textProperty().bind(getViewModel().helloMessage());
+		valueBindings();
+		actionBindings();
+		enableDisableBindings();
+	}
+
+	private void enableDisableBindings() {
+		minutesInput.disableProperty().bind(getViewModel().running());
+		secondsInput.disableProperty().bind(getViewModel().running());
+		getViewModel().running().addListener(new ChangeListener<Boolean>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Boolean> arg0,
+					Boolean oldValue, Boolean newValue) {
+				if (newValue) {
+					startStop.setText("Stop");
+				} else {
+					startStop.setText("Start");
+				}
+			}
+		});
+	}
+
+	private void actionBindings() {
+		startStop.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				getViewModel().startStop();
+			}
+		});
+	}
+
+	private void valueBindings() {
+		Bindings.bindBidirectional(minutesInput.textProperty(), getViewModel()
+				.minutes(), (StringConverter<Number>) converter);
+		Bindings.bindBidirectional(secondsInput.textProperty(), getViewModel()
+				.seconds(), (StringConverter<Number>) converter);
 	}
 
 }

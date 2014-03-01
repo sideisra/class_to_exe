@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns:fx="http://javafx.com/fxml" alignment="CENTER"
-    fx:controller="de.saxsys.classtoexe.timer.view.TimerView">
+<VBox alignment="CENTER" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="de.saxsys.classtoexe.timer.view.TimerView">
   <children>
-    <Label fx:id="helloLabel" />
+    <HBox prefHeight="100.0" prefWidth="200.0">
+      <children>
+        <TextField fx:id="minutesInput" prefWidth="200.0" text="1" />
+        <Label id="msDelim" text=":" />
+        <TextField fx:id="secondsInput" prefWidth="200.0" style="" text="00" />
+      </children>
+    </HBox>
+    <Button fx:id="startStop" mnemonicParsing="false" text="Start" />
   </children>
   <padding>
     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
