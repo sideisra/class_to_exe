@@ -8,7 +8,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
-import com.google.inject.Inject;
+import javax.inject.Inject;
 
 import de.saxsys.jfx.mvvm.base.viewmodel.ViewModel;
 
