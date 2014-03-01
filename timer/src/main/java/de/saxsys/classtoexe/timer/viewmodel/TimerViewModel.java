@@ -50,26 +50,34 @@ public class TimerViewModel implements ViewModel {
 
 					@Override
 					public void run() {
-						int sec = seconds.get();
-						int min = minutes.get();
-						sec--;
-						if (sec < 0) {
-							if (min > 0) {
-								min--;
-								sec = 59;
-							} else {
-								sec = 0;
-								running.set(false);
-							}
-						}
-						seconds.set(sec);
-						minutes.set(min);
+						ping();
 					}
 				});
 			}
 
 		}, 0, 1, TimeUnit.SECONDS);
 
+	}
+
+	void ping() {
+		int sec = seconds.get();
+		int min = minutes.get();
+		sec--;
+		if (sec <= 0 && min <= 0) {
+			running.set(false);
+			sec = 0;
+			min = 0;
+		} else {
+			if (sec < 0 && min > 0) {
+				min--;
+				sec = 59;
+			} else {
+				sec = 0;
+				running.set(false);
+			}
+		}
+		seconds.set(sec);
+		minutes.set(min);
 	}
 
 	public int getMinutes() {
