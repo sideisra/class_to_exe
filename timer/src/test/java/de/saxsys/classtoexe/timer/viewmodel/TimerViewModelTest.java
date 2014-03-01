@@ -14,12 +14,8 @@ public class TimerViewModelTest {
 	}
 
 	@Test
-	public void testGetMinutes() {
+	public void testGetSetMinutes() {
 		assertThat(cut.getMinutes()).isEqualTo(1);
-	}
-
-	@Test
-	public void testSetMinutes() {
 		cut.setMinutes(2);
 		assertThat(cut.getMinutes()).isEqualTo(2);
 	}
@@ -30,12 +26,8 @@ public class TimerViewModelTest {
 	}
 
 	@Test
-	public void testGetSeconds() {
+	public void testGetSetSeconds() {
 		assertThat(cut.getSeconds()).isEqualTo(0);
-	}
-
-	@Test
-	public void testSetSeconds() {
 		cut.setSeconds(3);
 		assertThat(cut.getSeconds()).isEqualTo(3);
 	}
