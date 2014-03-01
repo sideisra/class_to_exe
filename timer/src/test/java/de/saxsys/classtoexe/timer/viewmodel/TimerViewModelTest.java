@@ -44,6 +44,7 @@ public class TimerViewModelTest {
 
 	@Test
 	public void testPingMinuteSwitch() {
+		cut.running().set(true);
 		cut.minutes().set(1);
 		cut.seconds().set(1);
 		cut.ping();
@@ -52,6 +53,7 @@ public class TimerViewModelTest {
 		cut.ping();
 		assertThat(cut.getMinutes()).isEqualTo(0);
 		assertThat(cut.getSeconds()).isEqualTo(59);
+		assertThat(cut.isRunning()).isEqualTo(true);
 	}
 
 	@Test
