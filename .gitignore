@@ -1,0 +1,9 @@
+*.class
+target
+*.bak
+
+# eclipse #
+*.prefs
+.classpath
+.project
+.metadata
