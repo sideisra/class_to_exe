@@ -3,6 +3,7 @@ package de.saxsys.classtoexe.timer.viewmodel;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
@@ -27,9 +28,22 @@ public class TimerViewModel implements ViewModel {
 			public void changed(ObservableValue<? extends Boolean> arg0,
 					Boolean oldValue, Boolean newValue) {
 				if (newValue) {
-					startTimer();
+					pinger.startTimer(new Runnable() {
+
+						@Override
+						public void run() {
+							Platform.runLater(new Runnable() {
+
+								@Override
+								public void run() {
+									ping();
+								}
+							});
+						}
+
+					});
 				} else {
-					stopTimer();
+					pinger.stopTimer();
 				}
 			}
 
@@ -37,24 +51,11 @@ public class TimerViewModel implements ViewModel {
 	}
 
 	private void stopTimer() {
-		pinger.stopTimer();
+		running.set(false);
 	}
 
 	private void startTimer() {
-		pinger.startTimer(new Runnable() {
-
-			@Override
-			public void run() {
-				Platform.runLater(new Runnable() {
-
-					@Override
-					public void run() {
-						ping();
-					}
-				});
-			}
-
-		});
+		running.set(true);
 	}
 
 	void ping() {
@@ -100,10 +101,14 @@ public class TimerViewModel implements ViewModel {
 	}
 
 	public void startStop() {
-		running.set(!running.get());
+		if (isRunning()) {
+			stopTimer();
+		} else {
+			startTimer();
+		}
 	}
 
-	public BooleanProperty running() {
+	public ReadOnlyBooleanProperty running() {
 		return running;
 	}
 

@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -53,7 +54,7 @@ public class TimerViewModelTest {
 
 	@Test
 	public void testPingMinuteSwitch() {
-		cut.running().set(true);
+		cut.startStop();
 		cut.minutes().set(1);
 		cut.seconds().set(1);
 		cut.ping();
@@ -67,9 +68,9 @@ public class TimerViewModelTest {
 
 	@Test
 	public void testPingEnd() {
+		cut.startStop();
 		cut.minutes().set(0);
 		cut.seconds().set(1);
-		cut.running().set(true);
 		cut.ping();
 		assertThat(cut.getMinutes()).isEqualTo(0);
 		assertThat(cut.getSeconds()).isEqualTo(0);
@@ -81,7 +82,9 @@ public class TimerViewModelTest {
 		assertThat(cut.isRunning()).isEqualTo(false);
 		cut.startStop();
 		assertThat(cut.isRunning()).isEqualTo(true);
+		Mockito.verify(pinger).startTimer(Mockito.any(Runnable.class));
 		cut.startStop();
 		assertThat(cut.isRunning()).isEqualTo(false);
+		Mockito.verify(pinger).stopTimer();
 	}
 }
