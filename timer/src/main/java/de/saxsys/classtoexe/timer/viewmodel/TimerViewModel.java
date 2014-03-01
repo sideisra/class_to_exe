@@ -71,9 +71,6 @@ public class TimerViewModel implements ViewModel {
 			if (sec < 0 && min > 0) {
 				min--;
 				sec = 59;
-			} else {
-				sec = 0;
-				running.set(false);
 			}
 		}
 		seconds.set(sec);

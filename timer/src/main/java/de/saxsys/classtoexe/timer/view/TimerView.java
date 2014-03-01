@@ -18,6 +18,27 @@ import de.saxsys.jfx.mvvm.base.view.View;
 
 public class TimerView extends View<TimerViewModel> {
 
+	private final class AllowNumbersOnlyListener implements
+			ChangeListener<String> {
+
+		private final TextField observedText;
+
+		private AllowNumbersOnlyListener(TextField observedText) {
+			super();
+			this.observedText = observedText;
+			this.observedText.textProperty().addListener(this);
+		}
+
+		@Override
+		public void changed(ObservableValue<? extends String> arg0,
+				String oldText, String newText) {
+			if (!newText.matches("\\d*")
+					|| (!newText.isEmpty() && Integer.parseInt(newText) > 59)) {
+				observedText.setText(oldText);
+			}
+		}
+	}
+
 	@FXML
 	private TextField minutesInput;
 
@@ -34,6 +55,12 @@ public class TimerView extends View<TimerViewModel> {
 		valueBindings();
 		actionBindings();
 		enableDisableBindings();
+		setEventFilter();
+	}
+
+	private void setEventFilter() {
+		new AllowNumbersOnlyListener(minutesInput);
+		new AllowNumbersOnlyListener(secondsInput);
 	}
 
 	private void enableDisableBindings() {
