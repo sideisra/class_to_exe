@@ -3,9 +3,18 @@ package de.saxsys.classtoexe.timer.viewmodel;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class TimerViewModelTest {
 
+	@Mock
+	private Pinger pinger;
+
+	@InjectMocks
 	private final TimerViewModel cut = new TimerViewModel();
 
 	@Test

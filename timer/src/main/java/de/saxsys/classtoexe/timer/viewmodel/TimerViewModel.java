@@ -1,9 +1,5 @@
 package de.saxsys.classtoexe.timer.viewmodel;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -11,6 +7,9 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+
+import com.google.inject.Inject;
+
 import de.saxsys.jfx.mvvm.base.viewmodel.ViewModel;
 
 public class TimerViewModel implements ViewModel {
@@ -18,7 +17,8 @@ public class TimerViewModel implements ViewModel {
 	private final IntegerProperty seconds = new SimpleIntegerProperty(0);
 	private final BooleanProperty running = new SimpleBooleanProperty(false);
 
-	private ScheduledExecutorService schedule;
+	@Inject
+	private Pinger pinger;
 
 	public TimerViewModel() {
 		running.addListener(new ChangeListener<Boolean>() {
@@ -37,12 +37,11 @@ public class TimerViewModel implements ViewModel {
 	}
 
 	private void stopTimer() {
-		schedule.shutdown();
+		pinger.stopTimer();
 	}
 
 	private void startTimer() {
-		schedule = Executors.newScheduledThreadPool(1);
-		schedule.scheduleAtFixedRate(new Runnable() {
+		pinger.startTimer(new Runnable() {
 
 			@Override
 			public void run() {
@@ -55,8 +54,7 @@ public class TimerViewModel implements ViewModel {
 				});
 			}
 
-		}, 0, 1, TimeUnit.SECONDS);
-
+		});
 	}
 
 	void ping() {
