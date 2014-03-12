@@ -1,0 +1,127 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>de.saxsys.classtoexe</groupId>
+	<artifactId>timer_installer</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
+		<mvvmfx.version>0.1.3</mvvmfx.version>
+
+		<mainClass>de.saxsys.classtoexe.timer.TimerStarter</mainClass>
+		<nativeClientName>timer</nativeClientName>
+
+		<innosetup.dir>C:\Program Files (x86)\Inno Setup 5</innosetup.dir>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>de.saxsys</groupId>
+			<artifactId>mvvmFX</artifactId>
+			<version>${mvvmfx.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>de.saxsys</groupId>
+			<artifactId>mvvmFX-guice</artifactId>
+			<version>${mvvmfx.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.easytesting</groupId>
+			<artifactId>fest-assert-core</artifactId>
+			<version>2.0M10</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.9.5</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>${nativeClientName}</finalName>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<version>1.7</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+		<!-- generate native client -->
+		<plugins>
+			<plugin>
+				<groupId>com.zenjava</groupId>
+				<artifactId>javafx-maven-plugin</artifactId>
+				<version>2.0</version>
+				<configuration>
+					<mainClass>${mainClass}</mainClass>
+					<jvmArgs>
+						<jvmArg>-Xms64m</jvmArg>
+						<jvmArg>-Xmx128m</jvmArg>
+						<jvmArg>-Dsun.java2d.opengl=True</jvmArg>
+						<jvmArg>-Dfile.encoding=UTF-8</jvmArg>
+					</jvmArgs>
+					<vendor>saxsys</vendor>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>native</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>run-ant-exe</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<!-- replace variables in iss file -->
+								<copy file="${basedir}\src\main\resources\timer_installer.iss"
+									tofile="${project.build.directory}\timer_installer.iss" />
+
+								<replace token="@BuildDir@" value="${project.build.directory}"
+									file="${project.build.directory}\timer_installer.iss" />
+								<replace token="@SrcDir@" value="${basedir}\src\main\resources"
+									file="${project.build.directory}\timer_installer.iss" />
+								<replace token="@NativeBuildDir@"
+									value="${project.build.directory}\jfx\native\bundles\timer"
+									file="${project.build.directory}\timer_installer.iss" />
+								<replace token="@version@" value="${project.version}"
+									file="${project.build.directory}\timer_installer.iss" />
+
+								<exec executable="${innosetup.dir}\iscc.exe"
+									failonerror="true">
+									<arg line=" ${project.build.directory}\timer_installer.iss" />
+								</exec>
+
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
