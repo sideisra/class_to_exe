@@ -4,13 +4,13 @@
 #define RegKey "SOFTWARE\saxsys\eteofullinstaller\CurrentVersion\Uninstall\1C236595-1B9B-49DE-B269-6EF7C415BA78"
 
 #define AppName "Timer"
-#define AppVersion "@version@"
+#define AppVersion "${project.version}"
 #define AppPublisher "Saxonia Systems AG"
 #define AppURL "http://saxsys.de"
 
-#define SrcDir "@SrcDir@"
-#define BuildDir "@BuildDir@"
-#define NativeBuildDir "@NativeBuildDir@"
+#define SrcDir "${basedir}\src\main\resources"
+#define BuildDir "${project.build.directory}"
+#define NativeBuildDir "${project.build.directory}\jfx\native\bundles\timer"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -50,8 +50,7 @@ german.TimerPath=Timer Pfad
 [Code]
 var
   Page: TInputDirWizardPage;
-  DataDir: String; 
-  ResultCode: Integer;
+  DataDir: String;
 
 procedure ExitProcess(exitCode:integer);
   external 'ExitProcess@kernel32.dll stdcall';

@@ -60,6 +60,24 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<targetPath>${project.build.directory}</targetPath>
+				<includes>
+					<include>*.iss</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<targetPath>${project.build.outputDirectory}</targetPath>
+				<includes>
+					<include>**/*.fxml</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 
 		<!-- generate native client -->
 		<plugins>
@@ -98,25 +116,9 @@
 						</goals>
 						<configuration>
 							<tasks>
-								<!-- replace variables in iss file -->
-								<copy file="${basedir}\src\main\resources\timer_installer.iss"
-									tofile="${project.build.directory}\timer_installer.iss" />
-
-								<replace token="@BuildDir@" value="${project.build.directory}"
-									file="${project.build.directory}\timer_installer.iss" />
-								<replace token="@SrcDir@" value="${basedir}\src\main\resources"
-									file="${project.build.directory}\timer_installer.iss" />
-								<replace token="@NativeBuildDir@"
-									value="${project.build.directory}\jfx\native\bundles\timer"
-									file="${project.build.directory}\timer_installer.iss" />
-								<replace token="@version@" value="${project.version}"
-									file="${project.build.directory}\timer_installer.iss" />
-
-								<exec executable="${innosetup.dir}\iscc.exe"
-									failonerror="true">
+								<exec executable="${innosetup.dir}\iscc.exe" failonerror="true">
 									<arg line=" ${project.build.directory}\timer_installer.iss" />
 								</exec>
-
 							</tasks>
 						</configuration>
 					</execution>
