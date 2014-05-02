@@ -11,7 +11,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
-		<mvvmfx.version>0.1.3</mvvmfx.version>
+		<mvvmfx.version>0.1.4</mvvmfx.version>
 
 		<mainClass>de.saxsys.classtoexe.timer.TimerStarter</mainClass>
 		<nativeClientName>timer</nativeClientName>
@@ -120,6 +120,27 @@
 									<arg line=" ${project.build.directory}\timer_installer.iss" />
 								</exec>
 							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-installer</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attach-artifact</goal>
+						</goals>
+						<configuration>
+							<artifacts>
+								<artifact>
+									<file>${project.build.directory}/TimerInstaller.exe</file>
+									<type>exe</type>
+								</artifact>
+							</artifacts>
 						</configuration>
 					</execution>
 				</executions>
