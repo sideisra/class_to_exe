@@ -6,8 +6,6 @@ import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -81,12 +79,8 @@ public class TimerView extends View<TimerViewModel> {
 	}
 
 	private void actionBindings() {
-		startStop.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent arg0) {
-				getViewModel().startStop();
-			}
+		startStop.setOnAction(actionEvent -> {
+			getViewModel().startStop();
 		});
 	}
 

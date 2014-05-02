@@ -28,19 +28,10 @@ public class TimerViewModel implements ViewModel {
 			public void changed(ObservableValue<? extends Boolean> arg0,
 					Boolean oldValue, Boolean newValue) {
 				if (newValue) {
-					pinger.startTimer(new Runnable() {
-
-						@Override
-						public void run() {
-							Platform.runLater(new Runnable() {
-
-								@Override
-								public void run() {
-									ping();
-								}
-							});
-						}
-
+					pinger.startTimer(() -> {
+						Platform.runLater(() -> {
+							ping();
+						});
 					});
 				} else {
 					pinger.stopTimer();

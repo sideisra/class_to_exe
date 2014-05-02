@@ -4,12 +4,9 @@ import java.util.List;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-
 import com.google.inject.Module;
 
 import de.saxsys.classtoexe.timer.view.TimerView;
@@ -34,13 +31,9 @@ public class TimerStarter extends MvvmfxGuiceApplication {
 	public void startMvvmfx(Stage stage) throws Exception {
 		stage.setTitle("Timer");
 
-		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-
-			@Override
-			public void handle(WindowEvent arg0) {
-				Platform.exit();
-				System.exit(0);
-			}
+		stage.setOnCloseRequest(windowEvent -> {
+			Platform.exit();
+			System.exit(0);
 		});
 
 		ViewLoader viewLoader = new ViewLoader();
