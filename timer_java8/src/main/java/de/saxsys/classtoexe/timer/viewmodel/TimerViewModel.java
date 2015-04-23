@@ -11,7 +11,8 @@ import javafx.beans.value.ObservableValue;
 
 import javax.inject.Inject;
 
-import de.saxsys.jfx.mvvm.base.viewmodel.ViewModel;
+import de.saxsys.mvvmfx.ViewModel;
+
 
 public class TimerViewModel implements ViewModel {
 	private final IntegerProperty minutes = new SimpleIntegerProperty(1);
@@ -28,10 +29,19 @@ public class TimerViewModel implements ViewModel {
 			public void changed(ObservableValue<? extends Boolean> arg0,
 					Boolean oldValue, Boolean newValue) {
 				if (newValue) {
-					pinger.startTimer(() -> {
-						Platform.runLater(() -> {
-							ping();
-						});
+					pinger.startTimer(new Runnable() {
+
+						@Override
+						public void run() {
+							Platform.runLater(new Runnable() {
+
+								@Override
+								public void run() {
+									ping();
+								}
+							});
+						}
+
 					});
 				} else {
 					pinger.stopTimer();

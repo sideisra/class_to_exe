@@ -11,8 +11,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<mvvmfx.version>0.1.4</mvvmfx.version>
+		<mvvmfx.version>1.1.0</mvvmfx.version>
 		<mainClass>de.saxsys.classtoexe.timer.TimerStarter</mainClass>
+		<innosetup.dir>D:\Programme\innosetup5</innosetup.dir>
+		<innosetup.compression>lzma</innosetup.compression> <!-- override with value "none" to deactivate compression -->
 	</properties>
 
 	<dependencies>
@@ -23,7 +25,7 @@
 		</dependency>
 		<dependency>
 			<groupId>de.saxsys</groupId>
-			<artifactId>mvvmFX-guice</artifactId>
+			<artifactId>mvvmfx-guice</artifactId>
 			<version>${mvvmfx.version}</version>
 		</dependency>
 		<dependency>
@@ -47,6 +49,34 @@
 	</dependencies>
 
 	<build>
+		<finalName>timer</finalName>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<version>1.7</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<targetPath>${project.build.directory}</targetPath>
+				<includes>
+					<include>*.iss</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<targetPath>${project.build.outputDirectory}</targetPath>
+				<includes>
+					<include>**/*.fxml</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -70,6 +100,97 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>com.zenjava</groupId>
+				<artifactId>javafx-maven-plugin</artifactId>
+				<version>8.1.2</version>
+				<configuration>
+					<mainClass>de.saxsys.classtoexe.timer.TimerStarter</mainClass>
+					<jvmArgs>
+						<jvmArg>-Xms64m</jvmArg>
+						<jvmArg>-Xmx128m</jvmArg>
+						<jvmArg>-Dsun.java2d.opengl=True</jvmArg>
+						<jvmArg>-Dfile.encoding=UTF-8</jvmArg>
+					</jvmArgs>
+					<vendor>saxsys</vendor>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>native</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>assemble-zip</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptors>
+								<descriptor>${basedir}/src/main/resources/timer_zip.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<id>installer</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>run-ant-exe</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
+										<exec executable="${innosetup.dir}\iscc.exe" failonerror="true">
+											<arg line=" ${project.build.directory}\timer_installer.iss" />
+										</exec>
+									</tasks>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>build-helper-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-installer</id>
+								<phase>package</phase>
+								<goals>
+									<goal>attach-artifact</goal>
+								</goals>
+								<configuration>
+									<artifacts>
+										<artifact>
+											<file>${project.build.directory}/TimerInstaller.exe</file>
+											<type>exe</type>
+										</artifact>
+									</artifacts>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

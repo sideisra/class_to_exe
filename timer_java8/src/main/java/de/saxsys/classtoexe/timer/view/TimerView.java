@@ -6,15 +6,19 @@ import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import de.saxsys.classtoexe.timer.viewmodel.TimerViewModel;
-import de.saxsys.jfx.mvvm.base.view.View;
+import de.saxsys.mvvmfx.FxmlView;
+import de.saxsys.mvvmfx.InjectViewModel;
 
-public class TimerView extends View<TimerViewModel> {
+public class TimerView implements FxmlView<TimerViewModel>, Initializable {
 
 	private final class AllowNumbersOnlyListener implements
 			ChangeListener<String> {
@@ -37,6 +41,9 @@ public class TimerView extends View<TimerViewModel> {
 		}
 	}
 
+	@InjectViewModel
+	private TimerViewModel timerViewModel;
+	
 	@FXML
 	private TextField minutesInput;
 
@@ -62,9 +69,9 @@ public class TimerView extends View<TimerViewModel> {
 	}
 
 	private void enableDisableBindings() {
-		minutesInput.disableProperty().bind(getViewModel().running());
-		secondsInput.disableProperty().bind(getViewModel().running());
-		getViewModel().running().addListener(new ChangeListener<Boolean>() {
+		minutesInput.disableProperty().bind(timerViewModel.running());
+		secondsInput.disableProperty().bind(timerViewModel.running());
+		timerViewModel.running().addListener(new ChangeListener<Boolean>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Boolean> arg0,
@@ -79,15 +86,19 @@ public class TimerView extends View<TimerViewModel> {
 	}
 
 	private void actionBindings() {
-		startStop.setOnAction(actionEvent -> {
-			getViewModel().startStop();
+		startStop.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				timerViewModel.startStop();
+			}
 		});
 	}
 
 	private void valueBindings() {
-		Bindings.bindBidirectional(minutesInput.textProperty(), getViewModel()
+		Bindings.bindBidirectional(minutesInput.textProperty(), timerViewModel
 				.minutes(), (StringConverter<Number>) converter);
-		Bindings.bindBidirectional(secondsInput.textProperty(), getViewModel()
+		Bindings.bindBidirectional(secondsInput.textProperty(), timerViewModel
 				.seconds(), (StringConverter<Number>) converter);
 	}
 
